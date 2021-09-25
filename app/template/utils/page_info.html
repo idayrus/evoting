@@ -1,0 +1,10 @@
+{% macro page_info(msg, mb=3) %}
+	<div class="media text-muted text-sm mb-{{ mb }}">
+		<div>
+			<i class="fa fa-info-circle text-sm mr-2"></i>
+		</div>
+		<div class="media-body">
+			{{ msg|safe }}
+		</div>
+	</div>
+{% endmacro %}

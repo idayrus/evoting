@@ -1,0 +1,15 @@
+{% macro no_data_msg(search, target, url=None, border_top=True) %}
+	<div class="p-4 text-center text-muted {% if border_top %}border-top{% endif %}">
+		{% if search %}
+			<i class="fa fa-search text-primary mb-2" style="font-size: 2.5rem;"></i>
+			<div>
+				Tidak ada hasil untuk pencarian "<i>{{ search }}</i>"
+			</div>
+		{% else %}
+			<i class="fa fa-info-circle text-primary mb-2" style="font-size: 2.5rem;"></i>
+			<div>
+				Belum ada {{ target }}{% if url %}, klik <a href="{{ url }}">disini</a> untuk membuat {{ target }} baru.{% endif %}
+			</div>
+		{% endif %}
+	</div>
+{% endmacro %}

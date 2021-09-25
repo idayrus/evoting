@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block head %}{% endblock head %}
+{% block body %}
+<div class="body-card">
+	<div class="p-3">
+		<div class="row">
+			<div class="col-md-8">
+				{% if "user_create" in user.role %}
+					<a href="{{ url_for('user.editor') }}" class="btn btn-sm btn-primary"><i class="fa fa-plus mr-2"></i>Tambah</a>
+				{% else %}
+					<button class="btn btn-sm btn-outline-secondary disabled" disabled><i class="fa fa-plus mr-2"></i>Tambah</button>
+				{% endif %}
+			</div>
+			<div class="col-md-4 text-right mt-3 mt-md-0">
+				<form method="GET">
+					<div class="input-group input-group-sm">
+						<input {% if data.search %}value="{{ data.search }}"{% endif %} name="q" type="text" class="form-control rounded-left border-primary bg-transparent" placeholder="Cari Pengguna">
+						<div class="input-group-append">
+							<button class="btn btn-outline-primary" type="submit"><i class="fa fa-search"></i></button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	{% if data.user.items %}
+		<div class="table-responsive">
+			<table class="table table-hover text-sm mb-0">
+				<thead>
+					<tr>
+						<th class="pt-1 pb-1">Nama</th>
+						<th class="pt-1 pb-1">Jenis Kelamin</th>
+						<th class="pt-1 pb-1">Kontak</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in data.user.items %}
+						<tr>
+							<td>
+								{% if (item.id_|string) == (user.id_|string) %}
+									<a href="{{ url_for('user.setting') }}" class="text-primary font-weight-bold">{{ item.name }}</a> <span class="text-muted">&mdash; Anda</span>
+								{% else %}
+									{% if "user_update" in user.role %}
+										<a href="{{ url_for('user.editor', id_=item.id_) }}" class="text-primary font-weight-bold">
+											{{ item.name }}
+										</a>
+									{% else %}
+										<span class="text-primary font-weight-bold">{{ item.name }}</span>
+									{% endif %}
+								{% endif %}
+								<br />
+								{% if item.email %}
+									{{ item.email }}
+								{% else %}
+									<span class="text-muted text-xs font-weight-bold">Belum Aktif</span>
+								{% endif %}
+							</td>
+							<td class="align-middle">
+								{% if item.gender in ["1", 1] %}
+									Laki-Laki
+								{% else %}
+									Perempuan
+								{% endif %}
+							</td>
+							<td class="align-middle">
+								{% if item.contact %}
+									{{ item.contact }}
+								{% else %}
+									&mdash;
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% else %}
+		{% from "utils/no_data_msg.html" import no_data_msg %}
+		{{ no_data_msg(data.search, "Pengguna") }}
+	{% endif %}
+	{% if data.pagination.links %}
+		<div class="p-3 border-top slim-pagination">
+			{{ data.pagination.links }}
+		</div>
+	{% endif %}
+</div>
+{% endblock body %}
+{% block footer %}{% endblock footer %}

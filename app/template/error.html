@@ -1,0 +1,10 @@
+{% extends "box.html" %}
+{% block body %}
+<div class="mb-3 text-muted text-center" style="font-size: 5rem;">
+	<i class="fa fa-exclamation-triangle"></i>
+</div>
+<h4 class="text-center text-danger">Oopss, {{ data.title }}</h4>
+<div class="mb-3 text-muted text-center">
+	{{ data.message | safe }}
+</div>
+{% endblock body %}

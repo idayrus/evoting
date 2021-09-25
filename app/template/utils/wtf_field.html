@@ -1,0 +1,29 @@
+{% macro wtf_input(field, error, placeholder="", class_="", icon=None, password=False, label=False, helper="", style="", dict_={}) %}
+	<div class="slim-input {{ class_ }} {% if error %}slim-input-error{% endif %}" style="{{style}}">
+		{% if label %}
+			{{ field.label(id='label_%s' % (field.id)) }}
+			{% if field.flags.required %}<span class="important" data-tooltip="true" data-toggle="tooltip" data-placement="bottom" title="Wajib diisi">*</span>{% endif %}
+			{% if helper %}<span class="tooltip-helper" data-tooltip="true" data-toggle="tooltip" data-placement="bottom" data-html="true" title="{{ helper|safe }}"><i class="fa fa-info-circle"></i></span>{% endif %}
+		{% endif %}
+		<div class="input-group">
+			{% if icon %}
+				<div class="input-group-prepend">
+					<span class="input-group-text">
+						<i class="{{ icon }} ic"></i>
+					</span>
+				</div>
+			{% endif %}
+			{{ field(class_="form-control", placeholder=placeholder, **dict_) }}
+			{% if password %}
+				<span class="input-group-append">
+					<button id="btn-password-switch" data-target="#{{ field.id }}" class="btn btn-light btn-password-switch border" type="button"><i class="fa fa-eye"></i></button>
+				</span>
+			{% endif %}
+		</div>
+		<div class="input-error-message">
+			{% for e in error %}
+				{{ e|safe }}{% if not loop.last %}, {% endif %}
+			{% endfor %}
+		</div>
+	</div>
+{% endmacro %}

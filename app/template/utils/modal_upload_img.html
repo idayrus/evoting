@@ -1,0 +1,43 @@
+<div class="modal fade" id="modalUploadImage" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="modalUploadImage" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered slim-image-studio" role="document">
+		<div class="modal-content">
+			<div id="studio-container" class="modal-body">
+				<div class="media d-block d-sm-flex">
+					<div class="mr-0 mr-sm-3">
+						<div class="studio-picture">
+							<div class="picture-preview"></div>
+						</div>
+						<button id="btn-select-photo" class="btn btn-outline-primary btn-block btn-sm mt-2 btn-select-photo">Pilih Gambar</button>
+					</div>
+					<div class="media-body">
+						<div class="sidebar-control">
+							<input type="file" class="picture-image-input sr-only"/>
+							<div class="border rounded pt-3 pr-3 pb-2 pl-3 mb-3 mt-3 mt-sm-0">
+								<div class="row">
+									<div class="col-6 pr-2">
+										<button id="btn-rotate-left" class="btn btn-sm btn-outline-primary btn-block text-truncate"><i class="fa fa-rotate-left icon-r5"></i>Putar Kiri</button>
+									</div>
+									<div class="col-6 pl-2">
+										<button id="btn-rotate-right" class="btn btn-sm btn-outline-primary btn-block text-truncate"><i class="fa fa-rotate-right icon-r5"></i>Putar Kanan</button>
+									</div>
+									<div class="clearfix"></div>
+									<div class="col-12 mt-3">
+										<input type="range" class="picture-image-zoom-input custom-range"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-6 pr-2">
+									<button type="button" class="btn btn-light btn-sm btn-block" data-dismiss="modal">Batal</button>
+								</div>
+								<div class="col-6 pl-2">
+									<button id="btn-save-photo" class="btn btn-primary btn-block btn-sm">Terapkan</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

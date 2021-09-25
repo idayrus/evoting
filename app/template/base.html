@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+		<title>{% if data.title %}{{ data.title }} - {% endif %}{{ config.WEB_INFO.name }}</title>
+		<!-- icons -->
+		<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.png') }}?v={{ config.ASSETS_VERSION }}">
+		<meta name="theme-color" content="{{ config.WEB_INFO.color }}">
+		<meta name="msapplication-navbutton-color" content="{{ config.WEB_INFO.color }}">
+		<meta name="apple-mobile-web-app-status-bar-style" content="{{ config.WEB_INFO.color }}">
+		<!-- res -->
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ config.ASSETS_VERSION }}" type="text/css" media="all"/>
+		{% block head %}{% endblock head %}
+	</head>
+	<body class="slim">
+		<div class="slim-sidebar">
+			<div id="sidebar-menu" class="sidebar-menu slim-scrollbar">
+				<div class="sidebar-brand">
+					<div><a href="/" target="_blank">{{ config.WEB_INFO.name }}</a></div>
+					<div class="text-muted pt-1" style="font-weight: normal;font-size:70%">Powered by <a href="https://www.idayrus.com" target="_blank" class="text-muted">Idayrus Studio</a></div>
+				</div>
+				<div class="menu-group">
+					<ul class="group-menu">
+						<li>
+							<a href="{{ url_for('report.index') }}"{% if data.menu == "report"%} class="active"{% endif %}>
+								<i class="fa fa-chart-area ic d-inline-block align-middle"></i>
+								<span class="align-middle">Laporan</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="menu-group">
+					<div class="group-title">Data</div>
+					<ul class="group-menu">
+						<li>
+							<a href="{{ url_for('candidate.index') }}"{% if data.menu == "candidate"%} class="active"{% endif %}>
+								<i class="fa fa-user-tie ic d-inline-block align-middle"></i>
+								<span class="align-middle">Data Calon</span>
+							</a>
+						</li>
+						<li>
+							<a href="{{ url_for('voter.index') }}"{% if data.menu == "voter"%} class="active"{% endif %}>
+								<i class="fa fa-user-friends ic d-inline-block align-middle"></i>
+								<span class="align-middle">Data Pemilih</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="menu-group">
+					<div class="group-title">Pengaturan</div>
+					<ul class="group-menu">
+						{% if "user_read" in user.role %}
+							<li>
+								<a href="{{ url_for('user.index') }}"{% if data.menu == "user"%} class="active"{% endif %}>
+									<i class="fa fa-user-cog ic d-inline-block align-middle"></i>
+									<span class="align-middle">Admin</span>
+								</a>
+							</li>
+						{% endif %}
+						<li>
+							<a href="{{ url_for('setting.index') }}"{% if data.menu == "setting"%} class="active"{% endif %}>
+								<i class="fa fa-cog ic d-inline-block align-middle"></i>
+								<span class="align-middle">Pengaturan</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="slim-main">
+			<nav class="navbar navbar-dark navbar-expand slim-nav bg-primary">
+				<button id="slim-toggle-sidebar" class="navbar-toggler mr-auto d-block d-lg-none d-xl-none pr-3" type="button" aria-label="Toggle Navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="navbar-branch font-weight-bold text-xs">
+					<span class="d-none d-md-inline-block pl-1 pr-1 text-white">
+						{% if data.title %}
+							{% if data.back_url %}
+								<a href="{{ data.back_url }}" class="text-primary mr-2"><i class="fa fa-arrow-left text-white"></i></a>
+							{% endif %}
+							{{ data.title }}
+						{% endif %}
+					</span>
+				</div>
+				<div class="collapse navbar-collapse slim-menu-bar">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle no-caret" href="#" id="dropdown-user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<div class="menu-text-username d-block text-truncate" style="color:#fff;">
+									<i class="fa fa-user mr-2"></i>{{ user.name }}
+								</div>
+							</a>
+							<div class="dropdown-menu dropdown-menu-right dropdown-menu-user" aria-labelledby="dropdown-user">
+								<a class="dropdown-item" href="{{ url_for('user.setting') }}">Pengaturan</a>
+								<a class="dropdown-item" href="{{ url_for('user.setting', tab='password') }}">Ganti password</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item text-danger" href="{{ url_for('user.logout') }}">Logout</a>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</nav>
+			<div class="main-content">
+				<div class="content-body">
+					{% block body %}
+					{% endblock body %}
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modalAction" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-body text-center">
+						<div id="modalActionText"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light btn-sm m-0" data-dismiss="modal">Batal</button>
+						<a href="" id="btnActionConfirm" class="btn btn-sm ml-3">Do</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var locale_conf = {
+				'money': {
+					'prefix':		'Rp ',
+					'suffix':		',-',
+					'precision':	0
+				},
+				'number': {
+					'thousand':		'.',
+					'decimal':		',',
+					'precision':	2
+				}
+			}
+		</script>
+		<script type='text/javascript' src='{{ url_for('static', filename='js/dashboard.js') }}?v={{ config.ASSETS_VERSION }}'></script>
+		{% block footer %}{% endblock footer %}
+	</body>
+</html>

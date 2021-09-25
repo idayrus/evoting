@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block head %}{% endblock head %}
+{% block body %}
+{% from "utils/wtf_field.html" import wtf_input %}
+{% from "utils/page_info.html" import page_info %}
+<ul class="nav nav-tabs text-sm slim-tabs">
+	<li class="nav-item">
+		<a class="nav-link{% if data.tab == 'information' %} active{% endif %}" href="{{ url_for('user.setting', tab='information') }}">Informasi</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link{% if data.tab == 'password' %} active{% endif %}" href="{{ url_for('user.setting', tab='password') }}">Password</a>
+	</li>
+</ul>
+{% if data.tab == 'password' %}
+	<div class="body-card body-card-tab mb-3">
+		<form method="POST">
+			<div class="p-3">
+				{{ page_info('Silahkan masukan password saat ini, kemudian masukan password baru pada kolom berikut.') }}
+				{% include "utils/flash.html" %}
+				{{ form.csrf_token }}
+				{{ wtf_input(
+						form.password_old,
+						form.errors.password_old,
+						class_		= "mb-3",
+						password	= True,
+						label		= True,
+					)
+				}}
+				{{ wtf_input(
+						form.password_new,
+						form.errors.password_new,
+						class_		= "mb-2",
+						password	= True,
+						label		= True,
+					)
+				}}
+			</div>
+			<div class="p-3 border-top">
+				<button class="btn btn-sm btn-primary" type="submit">Simpan</button>
+			</div>
+		</form>
+	</div>
+{% else %}
+	<div class="body-card body-card-tab">
+		<form method="POST">
+			<div class="p-3">
+				{{ page_info('Silahkan lengkapi data diri anda.') }}
+				{% include "utils/flash.html" %}
+				{{ form.csrf_token }}
+				<div class="row">
+					<div class="col-sm-6">
+						{{ wtf_input(
+								form.name,
+								form.errors.name,
+								class_	= "mb-3",
+								label	= True
+							)
+						}}
+						{{ wtf_input(
+								form.gender,
+								form.errors.gender,
+								class_	= "mb-3",
+								label	= True
+							)
+						}}
+						{{ wtf_input(
+								form.birthdate,
+								form.errors.birthdate,
+								class_	= "mb-3",
+								label	= True,
+								style	= "position: relative",
+								dict_	= {'data-datepicker': 'date'}
+							)
+						}}
+						{{ wtf_input(
+								form.timezone,
+								form.errors.timezone,
+								class_	= "mb-3 mb-sm-2",
+								label	= True
+							)
+						}}
+					</div>
+					<div class="col-sm-6">
+						{#
+						{{ wtf_input(
+								form.division,
+								form.errors.division,
+								class_	= "mb-3",
+								label	= True
+							)
+						}}
+						#}
+						{{ wtf_input(
+								form.contact,
+								form.errors.contact,
+								class_	= "mb-3",
+								label	= True
+							)
+						}}
+						{{ wtf_input(
+								form.address,
+								form.errors.address,
+								class_	= "mb-3",
+								label	= True
+							)
+						}}
+					</div>
+				</div>
+			</div>
+			<div class="p-3 border-top">
+				<button class="btn btn-sm btn-primary" type="submit">Simpan</button>
+			</div>
+		</form>
+	</div>
+{% endif %}
+{% endblock body %}
+{% block footer %}{% endblock footer %}

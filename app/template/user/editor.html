@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block head %}{% endblock head %}
+{% block body %}
+{% from "utils/wtf_field.html" import wtf_input %}
+{% from "utils/page_info.html" import page_info %}
+	<ul class="nav nav-tabs text-sm slim-tabs">
+		{% if data.user %}
+			<li class="nav-item">
+				<a class="nav-link{% if data.tab == 'information' %} active{% endif %}" href="{{ url_for('user.editor', id_=data.user.id_, tab='information') }}">Informasi</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link{% if data.tab == 'role' %} active{% endif %}" href="{{ url_for('user.editor', id_=data.user.id_, tab='role') }}">Izin Akses</a>
+			</li>
+		{% else %}
+			<li class="nav-item">
+				<a class="nav-link{% if data.tab == 'information' %} active{% endif %}" href="#">Informasi</a>
+			</li>
+		{% endif %}
+	</ul>
+	<div class="body-card body-card-tab">
+		{% if data.tab == 'information' %}
+			<form method="POST">
+				<div class="p-3">
+					{% include "utils/flash.html" %}
+					{{ form.csrf_token }}
+					<div class="row">
+						<div class="col-sm-6">
+							{% if data.user %}
+								{% if not data.user.email == "-" and not True %}
+									<div class="slim-input mb-3">
+										<label for="division" id="label_division">Email</label>
+										<div class="input-group">
+											<input class="form-control disabled" value="{{ data.user.email }}" type="text" disabled>
+										</div>
+									</div>
+									{{ wtf_input(
+											form.password,
+											form.errors.password,
+											class_		= "mb-3",
+											password	= True,
+											label		= True,
+											helper		= "Kosongkan jika tidak ingin mengubah password"
+										)
+									}}
+								{% else %}
+									{{ wtf_input(
+											form.email,
+											form.errors.email,
+											class_	= "mb-3",
+											label	= True
+										)
+									}}
+									{{ wtf_input(
+											form.password,
+											form.errors.password,
+											class_		= "mb-3",
+											password	= True,
+											label		= True,
+										)
+									}}
+								{% endif %}
+							{% else %}
+								{{ wtf_input(
+										form.email,
+										form.errors.email,
+										class_	= "mb-3",
+										label	= True
+									)
+								}}
+								{{ wtf_input(
+										form.password,
+										form.errors.password,
+										class_		= "mb-3",
+										password	= True,
+										label		= True,
+									)
+								}}
+							{% endif %}
+							{{ wtf_input(
+									form.name,
+									form.errors.name,
+									class_	= "mb-3",
+									label	= True
+								)
+							}}
+							{{ wtf_input(
+									form.gender,
+									form.errors.gender,
+									class_	= "mb-3",
+									label	= True
+								)
+							}}
+							{{ wtf_input(
+									form.birthdate,
+									form.errors.birthdate,
+									class_	= "mb-3 mb-sm-2",
+									label	= True,
+									style	= "position: relative",
+									dict_	= {'data-datepicker': 'date'}
+								)
+							}}
+						</div>
+						<div class="col-sm-6">
+							{{ wtf_input(
+									form.contact,
+									form.errors.contact,
+									class_	= "mb-3",
+									label	= True
+								)
+							}}
+							{{ wtf_input(
+									form.address,
+									form.errors.address,
+									class_	= "mb-2",
+									label	= True
+								)
+							}}
+						</div>
+					</div>
+				</div>
+				<div class="border-top p-3">
+					<div class="row">
+						<div class="col-6">
+							<button class="btn btn-sm btn-primary" type="submit">Simpan</button>
+						</div>
+						<div class="col-6 text-right">
+							{% if data.user %}
+								{% if "user_delete" in user.role %}
+									<button data-action="confirm" data-msg="Apa anda yakin akan menghapus pengguna ini?" data-url="{{ url_for('user.editor', id_=data.user.id_, action='delete') }}" data-btn-txt="Hapus" data-btn-cls="btn-danger" class="ml-3 btn btn-sm btn-outline-danger" type="button">Hapus</button>
+								{% else %}
+									<button class="ml-3 btn btn-sm btn-outline-danger disabled" type="button" disabled>Hapus</button>
+								{% endif %}
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</form>
+		{% elif data.tab == 'role' %}
+			<form method="POST">
+				<div class="pt-3 pl-3 pr-3">
+					{{ page_info('Beberapa izin akses memiliki ketergantungan pada izin lain, izin akses yg memiliki ketergantungan otomatis akan dicentang oleh sistem.') }}
+					{% include "utils/flash.html" %}
+					<div class="user-role-wrapper">
+					{% for role_group in data.role_list %}
+						<div class="user-role-group border rounded mb-3">
+							<div class="group-title pl-3 pr-3 pt-2 pb-2 border-bottom font-weight-bold text-xs text-muted">
+								{{ role_group.group }}
+							</div>
+							<div class="role-item p-3">
+								{% if role_group.value %}
+									<ul style="list-style: none;" class="m-0 p-0">
+									{% for k, v, d in role_group.value %}
+										<li class="m-0">
+											<div class="custom-control custom-checkbox">
+												<input name="role" class="custom-control-input" type="checkbox" value="{{ k }}" id="{{ k }}" {% if k in data.user.role %}checked{% endif %}>
+												<label class="custom-control-label" for="{{ k }}">
+													{{ v }} {% if d %}<sup class="text-primary ml-1" data-tooltip="true" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Butuh {{ d|length }} izin akes lain">({{ d|length }})</sup>{% endif %}
+												</label>
+											</div>
+										</li>
+									{% endfor %}
+									</ul>
+								{% else %}
+									<div class="text-center text-muted">Kosong</div>
+								{% endif %}
+							</div>
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+				<div class="border-top p-3">
+					<button class="btn btn-sm btn-primary" type="submit">Simpan</button>
+				</div>
+			</form>
+		{% endif %}
+	</div>
+{% endblock body %}
+{% block footer %}{% endblock footer %}

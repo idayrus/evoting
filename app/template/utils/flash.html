@@ -1,0 +1,48 @@
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+	{% if messages %}
+		<div class="alert alert-success" role="alert">
+			<div class="media text-sm">
+				<div class="mr-2">
+					<i class="fa fa-check-circle"></i>
+				</div>
+				<div class="media-body">
+					{% for i in messages %}
+						{{ i|safe }}{% if not loop.last %}, {% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["info"]) %}
+	{% if messages %}
+		<div class="alert alert-info" role="alert">
+			<div class="media text-sm">
+				<div class="mr-2">
+					<i class="fa fa-info-circle"></i>
+				</div>
+				<div class="media-body">
+					{% for i in messages %}
+						{{ i|safe }}{% if not loop.last %}, {% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+	{% if messages %}
+		<div class="alert alert-danger" role="alert">
+			<div class="media text-sm">
+				<div class="mr-2">
+					<i class="fa fa-exclamation-circle"></i>
+				</div>
+				<div class="media-body">
+					{% for i in messages %}
+						{{ i|safe }}{% if not loop.last %}, {% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endwith %}

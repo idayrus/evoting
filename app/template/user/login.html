@@ -1,0 +1,42 @@
+{% extends "box.html" %}
+{% block head %}{% endblock head %}
+{% block body %}
+<form method="POST">
+	<h5 class="text-center mb-1 mt-3">{{ config.WEB_INFO.name }}</h5>
+	<div class="text-center text-muted font-weight-bold text-sm">{{ g_host_info }}</div>
+	<p class="text-center text-muted mb-4">Silahkan masuk terlebih dahulu</p>
+	{% include "utils/flash.html" %}
+	{% from "utils/wtf_field.html" import wtf_input %}
+	{{ form.csrf_token }}
+	{{ wtf_input(
+			form.usermail,
+			form.errors.usermail,
+			placeholder	= "Email atau Username",
+			class_		= "mb-2",
+			icon		= "fa fa-user ic",
+			password	= False
+		)
+	}}
+	{{ wtf_input(
+			form.password,
+			form.errors.password,
+			placeholder	= "Password",
+			class_		= "mb-3",
+			icon		= "fa fa-key ic",
+			password	= True
+		)
+	}}
+	<div class="row mt-4">
+		<div class="col-sm-6 mb-2">
+			<div class="custom-control custom-switch">
+				{{ form.remember(class_="custom-control-input", checked="true") }}
+				<label class="custom-control-label" for="remember">Ingat saya</label>
+			</div>
+		</div>
+		<div class="col-sm-6 text-left text-sm-right">
+			<button class="btn btn-primary btn-block text-left" type="submit"><i class="fa fa-check-circle mr-2"></i>Masuk</button>
+		</div>
+	</div>
+</form>
+{% endblock body %}
+{% block footer %}{% endblock footer %}
