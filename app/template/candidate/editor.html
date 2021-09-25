@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block head %}{% endblock head %}
+{% block body %}
+{% from "utils/wtf_field.html" import wtf_input %}
+{% from "utils/page_info.html" import page_info %}
+<div class="body-card">
+	<form method="POST">
+		<div class="p-3">
+			{% include "utils/flash.html" %}
+			{{ form.csrf_token }}
+			<div class="row">
+				<div class="col-sm-6">
+					{{ wtf_input(
+							form.number,
+							form.errors.number,
+							class_	= "mb-3",
+							label	= True
+						)
+					}}
+					{{ wtf_input(
+							form.leader_name,
+							form.errors.leader_name,
+							class_	= "mb-3",
+							label	= True
+						)
+					}}
+					{{ wtf_input(
+							form.deputy_name,
+							form.errors.deputy_name,
+							class_	= "mb-3",
+							label	= True
+						)
+					}}
+					{{ wtf_input(
+							form.note,
+							form.errors.note,
+							class_	= "mb-3",
+							label	= True
+						)
+					}}
+				</div>
+				<div class="col-sm-6">
+					{{ wtf_input(
+							form.campaign_video,
+							form.errors.campaign_video,
+							class_	= "mb-3",
+							label	= True
+						)
+					}}
+					{{ wtf_input(
+							form.campaign_info,
+							form.errors.campaign_info,
+							class_	= "mb-2",
+							label	= True
+						)
+					}}
+				</div>
+			</div>
+		</div>
+		<div class="border-top p-3">
+			<button class="btn btn-sm btn-primary" type="submit">Simpan</button>
+		</div>
+	</form>
+</div>
+{% endblock body %}
+{% block footer %}{% endblock footer %}
