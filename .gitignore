@@ -15,6 +15,8 @@ file/public/upload/*
 !file/private/temp/.dummy
 !file/private/upload/.dummy
 !file/public/upload/.dummy
+file/public/img/candidate/*
+!file/public/img/candidate/.dummy
 !file/build/.dummy
 backup/*
 !backup/.dummy

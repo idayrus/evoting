@@ -1,18 +1,28 @@
-from flask import request
+from flask import request, url_for
 from flask_login import current_user
 from app import app
-from app.helper.utils import msg_out, DataModel
+from app.helper.utils import msg_out, DataModel, save_base64_image
 from app.module.candidate.model import CandidateModel
 from sqlalchemy import or_, and_, not_
 from datetime import datetime
+from os import path, remove as remove_file
+from time import time
+from random import randrange
 
 
 class Candidate():
     def __init__(self):
-        pass
+        app.jinja_env.globals.update(get_candidate_photo=self.get_candidate_photo)
 
     def get_candidate_by_id(self, id_):
         return CandidateModel.query.available().filter_by(id_=id_).first()
+
+    def get_candidate_photo(self, candidate_data):
+        if candidate_data.photo:
+            photo_file = path.join(app.config.get('PUBLIC_DIR'), 'img', 'candidate', candidate_data.photo)
+            if path.isfile(photo_file):
+                return url_for('static', filename=f"img/candidate/{candidate_data.photo}")
+        return url_for('static', filename="img/candidate-default.jpg")
 
     #
     # Candidate
@@ -71,4 +81,28 @@ class Candidate():
     def candidate_soft_delete(self, candidate_data):
         if candidate_data:
             candidate_data.delete()
+        return True
+
+    def candidate_upload_photo(self, candidate_data):
+        # Get data
+        cover_base64 = request.form.get('cover')
+
+        # Check
+        if cover_base64.strip():
+            # Delete old file
+            if candidate_data.photo:
+                old_file = path.join(app.config.get('PUBLIC_DIR'), 'img', 'candidate', candidate_data.photo)
+                if path.isfile(old_file):
+                    remove_file(old_file)
+
+            # Process
+            filename = f"{int(time())}_{randrange(100000, 999999)}.jpg"
+            file_path = path.join(app.config.get('PUBLIC_DIR'), 'img', 'candidate', filename)
+            save_base64_image(cover_base64, file_path, width=512)
+
+            # Save
+            candidate_data.photo = filename
+            candidate_data.save()
+
+        # End
         return True

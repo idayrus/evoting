@@ -1,10 +1,12 @@
 from flask import request
 from flask_login import current_user
+from sqlalchemy.sql.elements import outparam
 from app import app
 from app.module.voter.model import VoterModel, VoterBallotModel
 from app.helper.utils import msg_out, DataModel
 from sqlalchemy import or_, and_, not_
 from datetime import datetime
+from random import randrange
 
 
 class Voter():
@@ -35,8 +37,22 @@ class Voter():
         # Paginate
         voter_data = voter_data.paginate(page=page, per_page=per_page)
 
+        # Output
+        output = DataModel()
+        output.total = voter_data.total
+        output.items = []
+
+        # Process
+        for item in voter_data.items:
+            item_data = DataModel(item.detach_copy().__dict__)
+            item_data.ballot = self.voter_get_ballot(item)
+            output.items.append(item_data)
+
         # End
-        return voter_data
+        return output
+
+    def voter_get_ballot(self, voter_data):
+        return VoterBallotModel.query.filter_by(voter_id=voter_data.id_).first()
 
     def voter_save_form(self, form, voter_data):
         # Data
@@ -55,6 +71,7 @@ class Voter():
         # Create new
         if not voter_data:
             voter_data = VoterModel()
+            voter_data.pin = randrange(100000, 999999)
 
         # Save
         voter_data.id_number = data.id_number
@@ -72,3 +89,9 @@ class Voter():
         if voter_data:
             voter_data.delete()
         return True
+
+    def voter_refresh_pin(self, voter_data):
+        # Update
+        voter_data.pin = randrange(100000, 999999)
+        voter_data.save()
+        return voter_data

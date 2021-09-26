@@ -27,9 +27,9 @@ def save_base64_image(img_base64, file_path, width=500):
         img = Image.open(BytesIO(img_decoded))
 
         # Resize image
-        #width_percent = (width / float(img.size[0]))
-        #height = int((float(img.size[1]) * float(width_percent)))
-        #img = img.resize((width, height), Image.ANTIALIAS)
+        width_percent = (width / float(img.size[0]))
+        height = int((float(img.size[1]) * float(width_percent)))
+        img = img.resize((width, height), Image.ANTIALIAS)
 
         # Save
         img.save(file_path)

@@ -50,7 +50,13 @@
 									Perempuan
 								{% endif %}
 							</td>
-							<td class="align-middle">-</td>
+							<td class="align-middle">
+								{% if item.ballot %}
+									<span class="text-success">Digunakan</span>
+								{% else %}
+									Belum Digunakan
+								{% endif %}
+							</td>
 						</tr>
 					{% endfor %}
 				</tbody>

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block head %}{% endblock head %}
 {% block body %}
+{% from "utils/wtf_field.html" import wtf_input %}
+{% from "utils/page_info.html" import page_info %}
 <ul class="nav nav-tabs text-sm slim-tabs">
 	<li class="nav-item">
 		<a class="nav-link{% if data.tab == 'setting' %} active{% endif %}" href="{{ url_for('setting.index', tab='setting') }}">Pengaturan</a>
@@ -10,9 +12,91 @@
 	</li>
 </ul>
 <div class="body-card body-card-tab">
-	<div class="p-3">
-		---
-	</div>
+	<form id="formEditor" method="POST">
+		<div class="p-3">
+			{% include "utils/flash.html" %}
+			{{ form.csrf_token }}
+			{% if data.tab == 'setting' %}
+				{{ page_info('Silahkan masukan waktu mulai dan waktu selesai pemungutan suara.') }}
+				{{ wtf_input(
+						form.start_date,
+						form.errors.start_date,
+						class_	= "mb-3",
+						label	= True,
+						style	= "position: relative",
+						dict_	= {'data-datepicker': 'date'}
+					)
+				}}
+				{{ wtf_input(
+						form.start_time,
+						form.errors.start_time,
+						class_	= "mb-3",
+						label	= True,
+						style	= "position: relative",
+						dict_	= {'data-datepicker': 'time'}
+					)
+				}}
+				{{ wtf_input(
+						form.end_date,
+						form.errors.end_date,
+						class_	= "mb-3",
+						label	= True,
+						style	= "position: relative",
+						dict_	= {'data-datepicker': 'date'}
+					)
+				}}
+				{{ wtf_input(
+						form.end_time,
+						form.errors.end_time,
+						class_	= "mb-0",
+						label	= True,
+						style	= "position: relative",
+						dict_	= {'data-datepicker': 'time'}
+					)
+				}}
+			{% elif data.tab == 'template' %}
+				<div class="slim-input mb-0">
+					<label for="content" class="pb-1">HTML Template</label>
+					{{ form.content(id='contentHtml') }}
+					<div id="container" style="width:100%;height:500px;border:1px solid #ced4da"></div>
+				</div>
+			{% endif %}
+		</div>
+		<div class="border-top p-3">
+			<button id="btnSubmit" class="btn btn-sm btn-primary" type="submit">Simpan</button>
+		</div>
+	</form>
 </div>
 {% endblock body %}
-{% block footer %}{% endblock footer %}
+{% block footer %}
+	{% if data.tab == 'template' %}
+		<script src="https://unpkg.com/monaco-editor@0.23.0/min/vs/loader.js"></script>
+		<script type="text/javascript">
+			require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@0.23.0/min/vs' }});
+			window.MonacoEnvironment = { getWorkerUrl: () => proxy };
+			let proxy = URL.createObjectURL(new Blob([`
+				self.MonacoEnvironment = {
+					baseUrl: 'https://unpkg.com/monaco-editor@0.23.0/min/'
+				};
+				importScripts('https://unpkg.com/monaco-editor@0.23.0/min/vs/base/worker/workerMain.js');
+			`], { type: 'text/javascript' }));
+			require(["vs/editor/editor.main"], function () {
+				let value = document.getElementById('contentHtml').value;
+				window.editor = monaco.editor.create(document.getElementById('container'), {
+					value: value,
+					language: 'html',
+					theme: 'vs',
+					renderWhitespace: true
+				});
+			});
+			$(document).ready(function() {
+				$('#btnSubmit').click(function(e) {
+					$("#contentHtml").val(window.editor.getValue());
+					$("#formEditor").submit();
+					e.preventDefault();
+					return false;
+				});
+			});
+		</script>
+	{% endif %}
+{% endblock footer %}

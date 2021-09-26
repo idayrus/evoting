@@ -101,9 +101,17 @@ def detail(id_):
     if not page_data.voter:
         return abort(404)
 
+    # Get ballot status
+    page_data.ballot = voter.voter_get_ballot(page_data.voter)
+
     # Handle delete
     if page_data.action == 'delete':
         voter.voter_soft_delete(page_data.voter)
         return redirect(url_for('voter.index'))
+
+    # Handle update pin
+    if page_data.action == 'refresh-pin':
+        voter.voter_refresh_pin(page_data.voter)
+        return redirect(url_for('voter.detail', id_=id_))
 
     return render_template("voter/detail.html", data=page_data)

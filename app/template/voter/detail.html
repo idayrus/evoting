@@ -26,9 +26,18 @@
 				<div class="text-xs text-muted">Alamat</div>
 				<div class="pt-1 mb-3">{{ data.voter.address or ('&mdash;'|safe) }}</div>
 				<div class="text-xs text-muted">Hak Suara</div>
-				<div class="pt-1 mb-3">---</div>
+				<div class="pt-1 mb-3">
+					{% if data.ballot %}
+						<span class="text-success">Digunakan</span>
+					{% else %}
+						Belum Digunakan
+					{% endif %}
+				</div>
 				<div class="text-xs text-muted">PIN Login</div>
-				<div class="pt-1 mb-3">---</div>
+				<div class="pt-1 mb-3">
+					<input type="number" value="{{ data.voter.pin }}" class="form-control form-control-sm d-inline" style="width:160px;" readonly/>
+					<button data-action="confirm" data-msg="Apa anda yakin akan mengubah nomor pin ini?" data-url="{{ url_for('voter.detail', id_=data.voter.id_, action='refresh-pin') }}" data-btn-txt="Refresh" data-btn-cls="btn-primary" class="ml-2 btn btn-sm btn-outline-primary" type="button"><i class="fa fa-redo"></i></button>
+				</div>
 			</div>
 		</div>
 	</div>

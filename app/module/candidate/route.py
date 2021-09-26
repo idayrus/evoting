@@ -108,4 +108,10 @@ def detail(id_):
         candidate.candidate_soft_delete(page_data.candidate)
         return redirect(url_for('candidate.index'))
 
+    # Handle photo upload
+    if request.method == "POST":
+        candidate.candidate_upload_photo(page_data.candidate)
+        return redirect(url_for('candidate.detail', id_=id_))
+
+
     return render_template("candidate/detail.html", data=page_data)
