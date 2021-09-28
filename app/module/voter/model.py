@@ -5,12 +5,16 @@ from app.helper.database import Database
 
 class VoterModel(Database):
     id_number = db.Column(db.String(128), nullable=False) # Identifier Number
+    status = db.Column(db.String(64), nullable=False) # unconfirmed, confirmed
     pin = db.Column(db.Integer, default=0)
     name = db.Column(db.Text, nullable=False)
     gender = db.Column(db.Integer, default=0)  # 1-Male, 0-Female
     birthdate = db.Column(db.String(64), nullable=True)
     contact = db.Column(db.Text, nullable=True)
     address = db.Column(db.Text, nullable=True)
+    confirm_at = db.Column(db.DateTime, nullable=True)
+    confirm_by = db.Column(ObjectIDField(32), nullable=True)
+    signature = db.Column(db.Text, nullable=True)
     extra_info = db.Column(MutableDict.as_mutable(DictField), nullable=True, default={})
 
 class VoterBallotModel(Database):

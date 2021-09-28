@@ -31,6 +31,7 @@
 						<th class="pt-1 pb-1">No. Induk</th>
 						<th class="pt-1 pb-1">Nama</th>
 						<th class="pt-1 pb-1">Jenis Kelamin</th>
+						<th class="pt-1 pb-1">Status</th>
 						<th class="pt-1 pb-1">Hak Suara</th>
 					</tr>
 				</thead>
@@ -48,6 +49,13 @@
 									Laki-Laki
 								{% else %}
 									Perempuan
+								{% endif %}
+							</td>
+							<td class="align-middle">
+								{% if item.status == 'confirmed' %}
+									<span class="text-primary">Sudah Dikonfirmasi</span>
+								{% else %}
+									<span class="text-danger">Belum Dikonfirmasi</span>
 								{% endif %}
 							</td>
 							<td class="align-middle">

@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from flask_paginate import Pagination
 from app import app
 from app.module.voter import Voter
-from app.module.voter.form import VoterForm
+from app.module.voter.form import VoterForm, VoterRegisterForm
 from app.helper.utils import wrap_log, DataModel
 
 # Init object
@@ -38,6 +38,30 @@ def index():
     page_data.pagination = pagination
 
     return render_template("voter/index.html", data=page_data)
+
+
+@voter_route.route('/register', methods=['GET', 'POST'])
+@voter_route.route('/register/', methods=['GET', 'POST'])
+@wrap_log()
+def register():
+    # Page Data
+    page_data = DataModel()
+    page_data.title = "Pendaftaran Pemilih Tetap"
+    page_data.view = request.args.get('view', type=str, default=None)
+    page_data.contact = request.args.get('contact', type=str, default=None)
+
+    # Form new
+    form = VoterRegisterForm()
+
+    # Save
+    if form.validate_on_submit():
+        save = voter.voter_register_form(form)
+        if save.success:
+            return redirect(url_for('voter.register', view='success', contact=save.payload.contact))
+        else:
+            save.do_flash()
+
+    return render_template("voter/register.html", form=form, data=page_data)
 
 
 @voter_route.route('/editor', methods=['GET', 'POST'], defaults={'id_': None})
@@ -112,6 +136,11 @@ def detail(id_):
     # Handle update pin
     if page_data.action == 'refresh-pin':
         voter.voter_refresh_pin(page_data.voter)
+        return redirect(url_for('voter.detail', id_=id_))
+
+    # Handle confirm
+    if page_data.action == 'confirm':
+        voter.voter_confirm(page_data.voter)
         return redirect(url_for('voter.detail', id_=id_))
 
     return render_template("voter/detail.html", data=page_data)

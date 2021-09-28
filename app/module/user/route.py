@@ -179,7 +179,7 @@ def login():
         # Do login
         login = user.login_form(form)
         if login.success:
-            return redirect('/')
+            return redirect(url_for('report.index'))
         else:
             login.do_flash()
 
