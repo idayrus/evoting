@@ -56,7 +56,10 @@
 				}}
 			{% elif data.tab == 'template' %}
 				<div class="slim-input mb-0">
-					<label for="content" class="pb-1">HTML Template</label>
+					<div class="row">
+						<div class="col-6"><label for="content" class="pb-1">HTML Template</label></div>
+						<div class="col-6 text-right"><a data-action="confirm" data-msg="Apa anda yakin akan mereset template ini?" data-url="{{ url_for('setting.index', tab='template', action='reset') }}" data-btn-txt="Reset" data-btn-cls="btn-primary" href="#">Reset</a></div>
+					</div>
 					{{ form.content(id='contentHtml') }}
 					<div id="container" style="width:100%;height:500px;border:1px solid #ced4da"></div>
 				</div>

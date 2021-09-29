@@ -1,6 +1,7 @@
 from flask import request
 from flask_login import current_user, login_user, logout_user, UserMixin
 from app import app
+from app.module.setting.model import SettingModel
 from app.module.user.model import UserModel, UserTokenModel, UserPasswordModel
 from app.helper.utils import msg_out, DataModel, ClientInfo, get_gerbang, generate_token_secret
 from app.helper.datetime import humanize_datetime
@@ -235,7 +236,12 @@ class User():
                 data.role = self.setting_role_get_all()
 
                 # Register
-                register = self.register(data, set_active=True)
+                self.register(data, set_active=True)
+
+                # Create setting
+                setting_data = SettingModel()
+                setting_data.identifier = 'default'
+                setting_data.save()
 
     def login(self, usermail, password, trusted=False):
         # Login as Register for first user

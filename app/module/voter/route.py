@@ -64,6 +64,18 @@ def register():
     return render_template("voter/register.html", form=form, data=page_data)
 
 
+@voter_route.route('/vote', methods=['GET', 'POST'])
+@voter_route.route('/vote/', methods=['GET', 'POST'])
+@wrap_log()
+def vote():
+    # Page Data
+    page_data = DataModel()
+    page_data.title = "Bilik Suara"
+
+
+    return render_template("voter/vote.html", data=page_data)
+
+
 @voter_route.route('/editor', methods=['GET', 'POST'], defaults={'id_': None})
 @voter_route.route('/editor/', methods=['GET', 'POST'], defaults={'id_': None})
 @voter_route.route('/editor/<ObjectID:id_>', methods=['GET', 'POST'])

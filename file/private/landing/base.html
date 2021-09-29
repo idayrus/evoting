@@ -1,0 +1,123 @@
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+		<title>{% if data.title %}{{ data.title }} - {% endif %}{{ config.WEB_INFO.name }}</title>
+		<!-- icons -->
+		<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.png') }}?v={{ config.ASSETS_VERSION }}">
+		<meta name="theme-color" content="{{ config.WEB_INFO.color }}">
+		<meta name="msapplication-navbutton-color" content="{{ config.WEB_INFO.color }}">
+		<meta name="apple-mobile-web-app-status-bar-style" content="{{ config.WEB_INFO.color }}">
+		<!-- res -->
+		<link rel="stylesheet" href="{{ url_for('static', filename='landing/style.css') }}?v={{ config.ASSETS_VERSION }}" type="text/css" media="all"/>
+	</head>
+	<body class="backdrop-white">
+		<div class="slim-main">
+			<div id="navbar" class="slim-navbar slim-navbar-bg">
+				<div class="container">
+					<div class="slim-nav-dropdown-box">
+						<a href="/"><div class="logo mr-3 font-weight-bold text-white" style="margin-top:4px;">{{ config.WEB_INFO.name }}</div></a>
+					</div>
+				</div>
+			</div>
+			<div class="slim-safearea">
+				<div class="container">
+					<div class="text-center">
+						<div class="text-muted mt-4" style="font-size:1.4rem;">Pengumuman</div>
+						<div class="pt-4">
+							Pemilihan Raya Presiden Mahasiswa (PEMIRA) akan dilaksanakan pada <b class="text-primary">{{ data.setting.vote_start|humanize_date }}</b> sampai <b class="text-primary">{{ data.setting.vote_end|humanize_date }}</b>.
+							<br />
+							{% if data.is_end %}
+								<br />
+								Proses pemungutan suara telah berakhir, pemenang akan segera diumumkan oleh panitia.
+							{% elif data.is_start %}
+								Jika anda belum memiliki PIN, silahkan mendaftar untuk menggunakan hak suara anda.
+								<br />
+								Untuk menggunakan hak pilih anda, silahkan klik tombol Berikan Suara.
+								<br /><br />
+								<a href="{{ url_for('voter.register') }}" class="btn btn-lg btn-primary">Daftar</a>
+								<span class="px-2 text-muted text-xs">atau</span>
+								<a href="{{ url_for('voter.vote') }}" class="btn btn-lg btn-primary">Berikan Suara</a>
+							{% else %}
+								Silahkan mendaftar untuk menggunakan hak suara anda pada tautan berikut.
+								<br /> <br />
+								<a href="{{ url_for('voter.register') }}" class="btn btn-lg btn-primary">Daftar</a>
+							{% endif %}
+						</div>
+					</div>
+					<br />
+					<br />
+					<div class="text-muted mb-4" style="font-size:1.6rem;">Pasangan Calon</div>
+					{% for candidate in data.candidate %}
+						<div class="p-3 border rounded mb-4">
+							<div class="row">
+								<div style="max-width:180px;" class="col-sm-3">
+									<img src="{{ get_candidate_photo(candidate) }}" class="img-fluid rounded">
+								</div>
+								<div class="col-sm-9 pt-4 pt-sm-0">
+									<h1 class="text-primary">{{ candidate.number }}</h1>
+									<h3 class="text-muted">{{ candidate.leader_name }}</h3>
+									{% if candidate.deputy_name %}
+										<h5 class="text-muted">{{ candidate.deputy_name }}</h5>
+									{% endif %}
+								</div>
+							</div>
+							<div class="pt-4">
+								<div class="pb-1 font-weight-bold text-muted text-xs">Visi Misi</div>
+								{{ (candidate.campaign_info or "&mdash;") | safe }}
+							</div>
+							<div class="pt-4">
+								<div class="pb-1 font-weight-bold text-muted text-xs">Video Kampanye</div>
+								{% if candidate.campaign_video %}
+									<iframe width="auto" max-width="320" height="240" src="{{ candidate.campaign_video }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+								{% else %}
+									&mdash;
+								{% endif %}
+							</div>
+						</div>
+					{% endfor %}
+					<br />
+					<div class="text-muted" style="font-size:1.6rem;">Panitia</div>
+					<div class="pt-4">
+						<div class="row">
+							{% for committee in [
+								("---", "Ketua", url_for('static', filename='img/candidate-default.jpg')),
+								("---", "Wakil Ketua", url_for('static', filename='img/candidate-default.jpg')),
+							] %}
+								<div class="col-4 col-lg-2">
+									<div class="hvr-bounce-in" style="margin-bottom:1rem;display:block">
+										<div style="padding:50%;border-radius: .5rem;background-repeat: no-repeat;background-size: cover;background-position: center;background-image:url('{{ committee[2] }}')" class="mb-1"></div>
+										<div class="text-truncate text-sm text-center">
+											<div class="text-muted font-weight-bold">{{ committee[0] }}</div>
+											<div class="text-muted text-xs">{{ committee[1] }}</div>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+					<br />
+				</div>
+			</div>
+			<div class="slim-footer">
+				<div class="container">
+					<div class="footer-content text-center">
+						<div class="footer-info pt-2 pb-2">
+							<div class="text-muted">Copyright &copy;<span id="year"></span>, Idayrus Studio.</div>
+							<div class="text-xs pt-3">
+								<a href="{{ url_for('user.login') }}">Halaman Admin</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Scripts -->
+		<script type='text/javascript' src='{{ url_for('static', filename='landing/jquery.slim.min.js') }}?v={{ config.ASSETS_VERSION }}'></script>
+		<script type='text/javascript' src='{{ url_for('static', filename='landing/bootstrap.bundle.min.js') }}?v={{ config.ASSETS_VERSION }}'></script>
+		<script type='text/javascript' src='{{ url_for('static', filename='landing/app.js') }}?v={{ config.ASSETS_VERSION }}'></script>
+	</body>
+</html>

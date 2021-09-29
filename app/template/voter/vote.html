@@ -1,0 +1,24 @@
+{% extends "box.html" %}
+{% block head %}{% endblock head %}
+{% block body %}
+{% if data.view == 'success' %}
+	<div class="text-center">
+		<i class="fa fa-check-circle text-success" style="font-size:3rem;"></i>
+		<h5 class="text-center mb-1 mt-3">Pendaftaran Berhasil</h5>
+		<p class="text-center text-muted mb-4">Kami akan mengirim nomor PIN ke nomor WhatsApp <b>{{ data.contact }}</b> paling lambat 2x24 jam.</p>
+		<a href="/" class="btn btn-outline-primary">Kembali</a>
+	</div>
+{% else %}
+	<form method="POST">
+		<h5 class="text-center mb-1 mt-3">{{ config.WEB_INFO.name }}</h5>
+		<p class="text-center text-muted mb-4">Silahkan lengkapi data diri anda</p>
+		{% include "utils/flash.html" %}
+		{% from "utils/wtf_field.html" import wtf_input %}
+		---
+		<div class="mt-4">
+			<button class="btn btn-primary btn-block btn-lg" type="button">Pilih</button>
+		</div>
+	</form>
+{% endif %}
+{% endblock body %}
+{% block footer %}{% endblock footer %}

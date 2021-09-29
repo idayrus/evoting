@@ -16,7 +16,7 @@ setting_route = Blueprint('setting', __name__, url_prefix='/setting')
 @app.route('/', methods=['GET', 'POST'])
 @wrap_log()
 def landing():
-   return "OK"
+   return setting.template_render()
 
 
 @setting_route.route('/', methods=['GET', 'POST'])
@@ -28,6 +28,8 @@ def index():
     page_data.title = "Template"
     page_data.menu = "setting"
     page_data.tab = request.args.get('tab', type=str, default='setting')
+    page_data.action = request.args.get('action', type=str, default=None)
+    page_data.setting = setting.get_setting()
 
     # Override tab
     if not page_data.tab in ['setting', 'template']:
@@ -35,19 +37,32 @@ def index():
 
     # Check
     if page_data.tab == 'setting':
-        # Form
-        form = SettingForm()
+        # Date
+        setting_date = setting.setting_date(page_data.setting)
 
-        # Save
+        # Form
+        form = SettingForm(
+            start_date = setting_date.start_date,
+            start_time = setting_date.start_time,
+            end_date = setting_date.end_date,
+            end_time = setting_date.end_time,
+        )
         if form.validate_on_submit():
-            pass
+            save = setting.setting_save_form(page_data.setting, form)
+            save.do_flash()
+            return redirect(url_for('setting.index', tab=page_data.tab))
 
     elif page_data.tab == 'template':
-        # Form
-        form = TemplateForm()
+        # Handle reset
+        if page_data.action == 'reset':
+            setting.template_reset(page_data.setting)
+            return redirect(url_for('setting.index', tab=page_data.tab))
 
-        # Save
+        # Form
+        form = TemplateForm(content=page_data.setting.template)
         if form.validate_on_submit():
-            pass
+            save = setting.template_save_form(page_data.setting, form)
+            save.do_flash()
+            return redirect(url_for('setting.index', tab=page_data.tab))
 
     return render_template("setting/index.html", form=form, data=page_data)

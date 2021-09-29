@@ -1,17 +1,17 @@
 """empty message
 
-Revision ID: 079f92062772
+Revision ID: e3496be33905
 Revises: 
-Create Date: 2021-09-28 19:48:53.191693
+Create Date: 2021-09-29 15:12:36.823648
 
 """
 from alembic import op
 import sqlalchemy as sa
 import app.helper
-
+from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision = '079f92062772'
+revision = 'e3496be33905'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,6 +36,19 @@ def upgrade():
     )
     op.create_index(op.f('ix_candidate_deleted'), 'candidate', ['deleted'], unique=False)
     op.create_index(op.f('ix_candidate_id_'), 'candidate', ['id_'], unique=False)
+    op.create_table('setting',
+    sa.Column('id_', app.helper.sqlalchemy.ObjectIDField(length=32), nullable=False),
+    sa.Column('created', sa.DateTime(), nullable=True),
+    sa.Column('modified', sa.DateTime(), nullable=True),
+    sa.Column('deleted', sa.Integer(), nullable=True),
+    sa.Column('identifier', sa.String(length=16), nullable=False),
+    sa.Column('vote_start', sa.DateTime(), nullable=True),
+    sa.Column('vote_end', sa.DateTime(), nullable=True),
+    sa.Column('template', mysql.LONGTEXT(), nullable=True),
+    sa.PrimaryKeyConstraint('id_')
+    )
+    op.create_index(op.f('ix_setting_deleted'), 'setting', ['deleted'], unique=False)
+    op.create_index(op.f('ix_setting_id_'), 'setting', ['id_'], unique=False)
     op.create_table('user',
     sa.Column('id_', app.helper.sqlalchemy.ObjectIDField(length=32), nullable=False),
     sa.Column('created', sa.DateTime(), nullable=True),
@@ -150,6 +163,9 @@ def downgrade():
     op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_index(op.f('ix_user_deleted'), table_name='user')
     op.drop_table('user')
+    op.drop_index(op.f('ix_setting_id_'), table_name='setting')
+    op.drop_index(op.f('ix_setting_deleted'), table_name='setting')
+    op.drop_table('setting')
     op.drop_index(op.f('ix_candidate_id_'), table_name='candidate')
     op.drop_index(op.f('ix_candidate_deleted'), table_name='candidate')
     op.drop_table('candidate')
