@@ -28,6 +28,50 @@ ALLOWED_CURRENCY = [
     ("IDR", "IDR - Indonesian Rupiah"),
     ("USD", "USD - United States Dollar")
 ]
+USER_ROLE = [
+    {
+        'group': 'Laporan',
+        'value': [
+            ('report_result_read', 'Lihat Hasil Pemilihan', [])
+        ]
+    },
+    {
+        'group': 'Data Calon',
+        'value': [
+            ('candidate_read', 'Lihat', []),
+            ('candidate_create', 'Tambah', ['candidate_read']),
+            ('candidate_update', 'Edit', ['candidate_read']),
+            ('candidate_delete', 'Hapus', ['candidate_read', 'candidate_update'])
+        ]
+    },
+    {
+        'group': 'Data Pemilih',
+        'value': [
+            ('voter_read', 'Lihat', []),
+            ('voter_create', 'Tambah', ['voter_read']),
+            ('voter_update', 'Edit', ['voter_read']),
+            ('voter_delete', 'Hapus', ['voter_read', 'voter_update']),
+            ('voter_pin', 'Lihat PIN', ['voter_read']),
+            ('voter_refresh', 'Ubah PIN', ['voter_read', 'voter_update', 'voter_pin']),
+            ('voter_confirm', 'Konfirmasi Data', ['voter_read'])
+        ]
+    },
+    {
+        'group': 'Pengguna',
+        'value': [
+            ('user_read', 'Lihat', []),
+            ('user_create', 'Tambah', ['user_read']),
+            ('user_update', 'Edit', ['user_read']),
+            ('user_delete', 'Hapus', ['user_read', 'user_update'])
+        ]
+    },
+    {
+        'group': 'Pengaturan',
+        'value': [
+            ('setting_update', 'Ubah Pengaturan', [])
+        ]
+    }
+]
 
 #
 # Function

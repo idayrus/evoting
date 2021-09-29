@@ -17,6 +17,10 @@ candidate_route = Blueprint('candidate', __name__, url_prefix='/candidate')
 @login_required
 @wrap_log()
 def index():
+    # Permission
+    if not "candidate_read" in current_user.user.role:
+        return abort(403)
+
     # Page data
     page_data = DataModel()
     page_data.title = "Data Calon"
@@ -58,6 +62,10 @@ def editor(id_):
 
     # Check
     if page_data.candidate:
+        # Permission
+        if not "candidate_update" in current_user.user.role:
+            return abort(403)
+
         # Set title
         page_data.title = "Edit Data Pemilih"
 
@@ -72,6 +80,10 @@ def editor(id_):
         )
 
     else:
+        # Permission
+        if not "candidate_create" in current_user.user.role:
+            return abort(403)
+
         # Form new
         form = CandidateForm()
 
@@ -91,6 +103,10 @@ def editor(id_):
 @login_required
 @wrap_log()
 def detail(id_):
+    # Permission
+    if not "candidate_read" in current_user.user.role:
+        return abort(403)
+
     # Page data
     page_data = DataModel()
     page_data.title = "Data Pemilih"
@@ -104,12 +120,12 @@ def detail(id_):
         return abort(404)
 
     # Handle delete
-    if page_data.action == 'delete':
+    if page_data.action == 'delete' and "candidate_delete" in current_user.user.role:
         candidate.candidate_soft_delete(page_data.candidate)
         return redirect(url_for('candidate.index'))
 
     # Handle photo upload
-    if request.method == "POST":
+    if request.method == "POST" and "candidate_update" in current_user.user.role:
         candidate.candidate_upload_photo(page_data.candidate)
         return redirect(url_for('candidate.detail', id_=id_))
 

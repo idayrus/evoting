@@ -23,6 +23,10 @@ def landing():
 @login_required
 @wrap_log()
 def index():
+    # Permission
+    if not "setting_update" in current_user.user.role:
+        return abort(403)
+
     # Page data
     page_data = DataModel()
     page_data.title = "Template"

@@ -4,11 +4,12 @@ from app import app
 from app.module.setting.model import SettingModel
 from app.module.user.model import UserModel, UserTokenModel, UserPasswordModel
 from app.helper.utils import msg_out, DataModel, ClientInfo, get_gerbang, generate_token_secret
-from app.helper.datetime import humanize_datetime
+from app.helper.preference import USER_ROLE
 from werkzeug.security import check_password_hash, generate_password_hash
 from uuid import uuid4
 from sqlalchemy import or_, and_, not_
 from datetime import datetime, timedelta
+from os import path
 
 
 class User():
@@ -238,9 +239,17 @@ class User():
                 # Register
                 self.register(data, set_active=True)
 
+                # Get template
+                file = open(path.join(app.config.get("PRIVATE_DIR"), "landing", "base.html"), "r")
+                template_html = file.read()
+                file.close()
+
                 # Create setting
                 setting_data = SettingModel()
                 setting_data.identifier = 'default'
+                setting_data.vote_start = datetime.utcnow()
+                setting_data.vote_end = datetime.utcnow()
+                setting_data.template = template_html
                 setting_data.save()
 
     def login(self, usermail, password, trusted=False):
@@ -340,7 +349,7 @@ class User():
     def setting_role_get_available(self, user_data=None):
         # Container
         output = []
-        output += app.config.get("USER_ROLE")
+        output += USER_ROLE
 
         # End
         return output

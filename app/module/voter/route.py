@@ -15,6 +15,10 @@ voter_route = Blueprint('voter', __name__, url_prefix='/voter')
 @login_required
 @wrap_log()
 def index():
+    # Permission
+    if not "voter_read" in current_user.user.role:
+        return abort(403)
+
     # Page data
     page_data = DataModel()
     page_data.title = "Data Pemilih"
@@ -121,6 +125,10 @@ def editor(id_):
 
     # Check
     if page_data.voter:
+        # Permission
+        if not "voter_update" in current_user.user.role:
+            return abort(403)
+
         # Set title
         page_data.title = "Edit Data Pemilih"
 
@@ -135,6 +143,10 @@ def editor(id_):
         )
 
     else:
+        # Permission
+        if not "voter_create" in current_user.user.role:
+            return abort(403)
+
         # Form new
         form = VoterForm()
 
@@ -154,6 +166,10 @@ def editor(id_):
 @login_required
 @wrap_log()
 def detail(id_):
+    # Permission
+    if not "voter_read" in current_user.user.role:
+        return abort(403)
+
     # Page data
     page_data = DataModel()
     page_data.title = "Data Pemilih"
@@ -170,17 +186,17 @@ def detail(id_):
     page_data.ballot = voter.voter_get_ballot(page_data.voter)
 
     # Handle delete
-    if page_data.action == 'delete':
+    if page_data.action == 'delete' and "voter_delete" in current_user.user.role:
         voter.voter_soft_delete(page_data.voter)
         return redirect(url_for('voter.index'))
 
     # Handle update pin
-    if page_data.action == 'refresh-pin':
+    if page_data.action == 'refresh-pin' and "voter_refresh" in current_user.user.role:
         voter.voter_refresh_pin(page_data.voter)
         return redirect(url_for('voter.detail', id_=id_))
 
     # Handle confirm
-    if page_data.action == 'confirm':
+    if page_data.action == 'confirm' and "voter_confirm" in current_user.user.role:
         voter.voter_confirm(page_data.voter)
         return redirect(url_for('voter.detail', id_=id_))
 

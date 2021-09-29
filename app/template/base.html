@@ -31,42 +31,52 @@
 						</li>
 					</ul>
 				</div>
-				<div class="menu-group">
-					<div class="group-title">Data</div>
-					<ul class="group-menu">
-						<li>
-							<a href="{{ url_for('candidate.index') }}"{% if data.menu == "candidate"%} class="active"{% endif %}>
-								<i class="fa fa-user-tie ic d-inline-block align-middle"></i>
-								<span class="align-middle">Data Calon</span>
-							</a>
-						</li>
-						<li>
-							<a href="{{ url_for('voter.index') }}"{% if data.menu == "voter"%} class="active"{% endif %}>
-								<i class="fa fa-user-friends ic d-inline-block align-middle"></i>
-								<span class="align-middle">Data Pemilih</span>
-							</a>
-						</li>
-					</ul>
-				</div>
-				<div class="menu-group">
-					<div class="group-title">Pengaturan</div>
-					<ul class="group-menu">
-						{% if "user_read" in user.role %}
-							<li>
-								<a href="{{ url_for('user.index') }}"{% if data.menu == "user"%} class="active"{% endif %}>
-									<i class="fa fa-user-cog ic d-inline-block align-middle"></i>
-									<span class="align-middle">Admin</span>
-								</a>
-							</li>
-						{% endif %}
-						<li>
-							<a href="{{ url_for('setting.index') }}"{% if data.menu == "setting"%} class="active"{% endif %}>
-								<i class="fa fa-cog ic d-inline-block align-middle"></i>
-								<span class="align-middle">Pengaturan</span>
-							</a>
-						</li>
-					</ul>
-				</div>
+				{% if "candidate_read" in user.role or "voter_read" in user.role %}
+					<div class="menu-group">
+						<div class="group-title">Data</div>
+						<ul class="group-menu">
+							{% if "candidate_read" in user.role %}
+								<li>
+									<a href="{{ url_for('candidate.index') }}"{% if data.menu == "candidate"%} class="active"{% endif %}>
+										<i class="fa fa-user-tie ic d-inline-block align-middle"></i>
+										<span class="align-middle">Data Calon</span>
+									</a>
+								</li>
+							{% endif %}
+							{% if "voter_read" in user.role %}
+								<li>
+									<a href="{{ url_for('voter.index') }}"{% if data.menu == "voter"%} class="active"{% endif %}>
+										<i class="fa fa-user-friends ic d-inline-block align-middle"></i>
+										<span class="align-middle">Data Pemilih</span>
+									</a>
+								</li>
+							{% endif %}
+						</ul>
+					</div>
+				{% endif %}
+				{% if "user_read" in user.role or "setting_update" in user.role %}
+					<div class="menu-group">
+						<div class="group-title">Pengaturan</div>
+						<ul class="group-menu">
+							{% if "user_read" in user.role %}
+								<li>
+									<a href="{{ url_for('user.index') }}"{% if data.menu == "user"%} class="active"{% endif %}>
+										<i class="fa fa-user-cog ic d-inline-block align-middle"></i>
+										<span class="align-middle">Admin</span>
+									</a>
+								</li>
+							{% endif %}
+							{% if "setting_update" in user.role %}
+								<li>
+									<a href="{{ url_for('setting.index') }}"{% if data.menu == "setting"%} class="active"{% endif %}>
+										<i class="fa fa-cog ic d-inline-block align-middle"></i>
+										<span class="align-middle">Pengaturan</span>
+									</a>
+								</li>
+							{% endif %}
+						</ul>
+					</div>
+				{% endif %}
 			</div>
 		</div>
 		<div class="slim-main">

@@ -42,55 +42,59 @@
 		</div>
 	</div>
 </div>
-<div class="body-card">
-	<div class="px-3 py-2 font-weight-bold text-muted text-xs border-bottom">
-		Hasil Pemilihan
-	</div>
-	<div class="p-3">
-		<div class="row">
-			<div class="col-md-6">
-				<canvas id="chartReport"></canvas>
-			</div>
-			<div class="col-md-6 mt-4 mt-md-0">
-				<table>
-					<tr><td class="pr-3">Pasangan Calon</td><td>: {{data.overview.candidate_total}}</td></tr>
-					<tr><td class="pr-3">Pemilih Tetap</td><td>: {{data.overview.voter_total}}</td></tr>
-					<tr><td class="pr-3">Suara Masuk</td><td>: {{data.overview.ballot_total}}</td></tr>
-					<tr><td class="pr-3 pt-3 pb-1 text-xs font-weight-bold text-muted" colspan="2">Hasil Pemilihan</td></tr>
-					{% for name in data.chart.name %}
-						<tr><td class="pr-3">{{ name }}</td><td>: {{ data.chart.total[loop.index0] }} Suara</td></tr>
-					{% endfor %}
-				</table>
+{% if "report_result_read" in user.role %}
+	<div class="body-card">
+		<div class="px-3 py-2 font-weight-bold text-muted text-xs border-bottom">
+			Hasil Pemilihan
+		</div>
+		<div class="p-3">
+			<div class="row">
+				<div class="col-md-6">
+					<canvas id="chartReport"></canvas>
+				</div>
+				<div class="col-md-6 mt-4 mt-md-0">
+					<table>
+						<tr><td class="pr-3">Pasangan Calon</td><td>: {{data.overview.candidate_total}}</td></tr>
+						<tr><td class="pr-3">Pemilih Tetap</td><td>: {{data.overview.voter_total}}</td></tr>
+						<tr><td class="pr-3">Suara Masuk</td><td>: {{data.overview.ballot_total}}</td></tr>
+						<tr><td class="pr-3 pt-3 pb-1 text-xs font-weight-bold text-muted" colspan="2">Hasil Pemilihan</td></tr>
+						{% for name in data.chart.name %}
+							<tr><td class="pr-3">{{ name }}</td><td>: {{ data.chart.total[loop.index0] }} Suara</td></tr>
+						{% endfor %}
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+{% endif %}
 {% endblock body %}
 {% block footer %}
-	<script type='text/javascript' src='{{ url_for('static', filename='js/chart.min.js') }}?v={{ config.ASSETS_VERSION }}'></script>
-	<script type='text/javascript'>
-		var randomScalingFactor = function() {
-			return Math.round(Math.random() * 100);
-		};
-		window.onload = function() {
-			// Chart for member
-			new Chart(document.getElementById('chartReport').getContext('2d'), {
-				type: 'pie',
-				data: {
-					datasets: [{
-						data: {{ data.chart.total_json|safe }},
-						backgroundColor: {{ data.chart.color_json|safe }},
-						label: 'Hasil Pemilihan'
-					}],
-					labels: {{ data.chart.name_json|safe }}
-				},
-				options: {
-					responsive: true,
-					legend: {
-						position: "right"
+	{% if "report_result_read" in user.role %}
+		<script type='text/javascript' src='{{ url_for('static', filename='js/chart.min.js') }}?v={{ config.ASSETS_VERSION }}'></script>
+		<script type='text/javascript'>
+			var randomScalingFactor = function() {
+				return Math.round(Math.random() * 100);
+			};
+			window.onload = function() {
+				// Chart for member
+				new Chart(document.getElementById('chartReport').getContext('2d'), {
+					type: 'pie',
+					data: {
+						datasets: [{
+							data: {{ data.chart.total_json|safe }},
+							backgroundColor: {{ data.chart.color_json|safe }},
+							label: 'Hasil Pemilihan'
+						}],
+						labels: {{ data.chart.name_json|safe }}
+					},
+					options: {
+						responsive: true,
+						legend: {
+							position: "right"
+						}
 					}
-				}
-			});
-		};
-	</script>
+				});
+			};
+		</script>
+	{% endif %}
 {% endblock footer %}

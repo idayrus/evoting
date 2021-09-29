@@ -75,23 +75,3 @@ WEB_INFO = {
     "datetime": datetime.utcnow(),
     "color": "#1976d2",
 }
-
-# ROLE
-USER_ROLE = [
-    {
-        'group': 'Pengguna',
-        'value': [
-            ('user_read', 'Lihat', []),
-            ('user_create', 'Tambah', ['user_read']),
-            ('user_update', 'Edit', ['user_read']),
-            ('user_delete', 'Hapus', ['user_read', 'user_update']),
-            ('user_activity', 'Lihat Aktivitas', ['user_read'])
-        ]
-    },
-    {
-        'group': 'Pengaturan',
-        'value': [
-            ('setting_update', 'Ubah Pengaturan', [])
-        ]
-    }
-]
