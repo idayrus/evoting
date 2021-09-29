@@ -14,7 +14,7 @@
 			<div class="col-md-4 text-right mt-3 mt-md-0">
 				<form method="GET">
 					<div class="input-group input-group-sm">
-						<input {% if data.search %}value="{{ data.search }}"{% endif %} name="q" type="text" class="form-control rounded-left border-primary bg-transparent" placeholder="Cari Calon">
+						<input {% if data.query.search %}value="{{ data.query.search }}"{% endif %} name="q" type="text" class="form-control rounded-left border-primary bg-transparent" placeholder="Cari Calon">
 						<div class="input-group-append">
 							<button class="btn btn-outline-primary" type="submit"><i class="fa fa-search"></i></button>
 						</div>
@@ -44,7 +44,7 @@
 		</div>
 	{% else %}
 		{% from "utils/no_data_msg.html" import no_data_msg %}
-		{{ no_data_msg(data.search, "data calon") }}
+		{{ no_data_msg(data.query.search, "data calon") }}
 	{% endif %}
 	{% if data.pagination.links %}
 		<div class="p-3 border-top slim-pagination">

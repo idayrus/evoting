@@ -20,5 +20,7 @@ def index():
     page_data = DataModel()
     page_data.title = "Laporan"
     page_data.menu = "report"
+    page_data.overview = report.get_overview()
+    page_data.chart = report.get_chart()
 
     return render_template("report/index.html", data=page_data)
