@@ -1,22 +1,83 @@
 {% extends "box.html" %}
 {% block head %}{% endblock head %}
 {% block body %}
-{% if data.view == 'success' %}
-	<div class="text-center">
-		<i class="fa fa-check-circle text-success" style="font-size:3rem;"></i>
-		<h5 class="text-center mb-1 mt-3">Pendaftaran Berhasil</h5>
-		<p class="text-center text-muted mb-4">Kami akan mengirim nomor PIN ke nomor WhatsApp <b>{{ data.contact }}</b> paling lambat 2x24 jam.</p>
-		<a href="/" class="btn btn-outline-primary">Kembali</a>
+{% from "utils/page_info.html" import page_info %}
+{% from "utils/wtf_field.html" import wtf_input %}
+{% if data.voter %}
+	<form method="POST">
+		<h5 class="text-center mb-1 mt-3">{{ data.voter.name }}</h5>
+		<p class="text-center text-muted mb-4">{{ data.voter.id_number }}</p>
+		{% include "utils/flash.html" %}
+		{{ page_info('Silahkan pilih kandidat dibawah ini. Pastikan pilihan anda sudah sesuai, pemilihan hanya bisa dilakukan sekali.', mb=4) }}
+		{% for candidate in data.candidate %}
+			<div class="border mb-4">
+				<div class="media">
+					<div style="max-width:128px;">
+						<img src="{{ get_candidate_photo(candidate) }}" class="img-fluid">
+					</div>
+					<div class="media-body px-3 py-2">
+						<h3 class="text-primary mb-2">{{ candidate.number }}</h3>
+						<div class="text-muted font-weight-bold">{{ candidate.leader_name }}</div>
+						{% if candidate.deputy_name %}
+							<div>{{ candidate.deputy_name }}</div>
+						{% endif %}
+					</div>
+				</div>
+				<div class="border-top p-2">
+					<a data-action="confirm" data-msg="Apa anda sudah yakin memilih pasangan calon nomor {{ candidate.number }}?" data-url="{{ url_for('voter.vote', vote=candidate.id_) }}" data-btn-txt="Ya, Pilih No. {{ candidate.number }}" data-btn-cls="btn-primary" href="#" class="btn btn-sm btn-primary btn-block">Pilih No. {{ candidate.number }}</a>
+				</div>
+			</div>
+		{% endfor %}
+	</form>
+	<div class="modal fade" id="modalAction" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-body text-center">
+					<div id="modalActionText"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-light btn-sm m-0" data-dismiss="modal">Batal</button>
+					<a href="" id="btnActionConfirm" class="btn btn-sm ml-3">Do</a>
+				</div>
+			</div>
+		</div>
 	</div>
+{% elif data.view == 'success' %}
+		<div class="text-center">
+			<i class="fa fa-check-circle text-success" style="font-size:3rem;"></i>
+			<h5 class="text-center mb-1 mt-3">Pemilihan Berhasil</h5>
+			<p class="text-center text-muted mb-4">Hak suara anda telah digunakan, terimakasih sudah berpartisipasi.</p>
+			<a href="/" class="btn btn-outline-primary">Kembali</a>
+		</div>
 {% else %}
 	<form method="POST">
 		<h5 class="text-center mb-1 mt-3">{{ config.WEB_INFO.name }}</h5>
-		<p class="text-center text-muted mb-4">Silahkan lengkapi data diri anda</p>
+		<p class="text-center text-muted mb-4">Silahkan login terlebih dahulu</p>
 		{% include "utils/flash.html" %}
-		{% from "utils/wtf_field.html" import wtf_input %}
-		---
+		{{ data.form.csrf_token }}
+		{{ wtf_input(
+				data.form.id_number,
+				data.form.errors.id_number,
+				placeholder	= "Masukan NIM Anda",
+				class_	= "mb-3",
+				label	= True
+			)
+		}}
+		{{ wtf_input(
+				data.form.pin,
+				data.form.errors.pin,
+				placeholder	= "Masukan PIN Anda",
+				class_		= "mb-3",
+				icon		= "fa fa-key ic",
+				password	= True,
+				label	= True
+			)
+		}}
 		<div class="mt-4">
-			<button class="btn btn-primary btn-block btn-lg" type="button">Pilih</button>
+			<button class="btn btn-primary btn-block btn-lg" type="submit">Login</button>
+		</div>
+		<div class="mt-4 text-center">
+			Belum memiliki PIN? Silahkan mendaftar <a href="{{ url_for('voter.register') }}" class="font-weight-bold">disini</a>.
 		</div>
 	</form>
 {% endif %}

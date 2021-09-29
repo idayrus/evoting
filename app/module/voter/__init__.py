@@ -1,5 +1,7 @@
+from flask import session
 from flask_login import current_user
 from app import app
+from app.module.candidate.model import CandidateModel
 from app.module.voter.model import VoterModel, VoterBallotModel
 from app.helper.utils import msg_out, DataModel
 from app.helper.phone import filter_phone, is_valid_phone
@@ -189,3 +191,71 @@ class Voter():
         voter_data.confirm_by = current_user.user.id_
         voter_data.save()
         return voter_data
+
+    #
+    # Vote
+    #
+
+    def vote_get_by_id(self, id_):
+        return CandidateModel.query.available().filter_by(id_=id_).first()
+
+    def vote_get_candidate(self):
+        return CandidateModel.query.available().order_by(CandidateModel.number.asc()).all()
+
+    def vote_get_voter_id(self):
+        return session.get('voter') or None
+
+    def vote_get_voter(self):
+        voter_id = self.vote_get_voter_id()
+        if voter_id:
+            return self.get_voter_by_id(voter_id)
+        else:
+            return None
+
+    def vote_login(self, form):
+        # Form
+        id_number = form.id_number.data
+        pin = form.pin.data
+
+        # Check
+        voter_data = VoterModel.query.available().filter_by(id_number=id_number).first()
+        if voter_data:
+            # Check status
+            if not voter_data.status == 'confirmed':
+                return msg_out(False, message='Data anda belum dikonfirmasi, silahkan hubungi panitia untuk informasi lebih lanjut.')
+            # Check pin
+            if str(voter_data.pin) == str(pin):
+                session['voter'] = str(voter_data.id_)
+            else:
+                return msg_out(False, message='PIN yang anda masukan salah.')
+        else:
+            return msg_out(False, message='NIM anda belum terdaftar, silahkan lakukan pendaftaran terlebih dahulu.')
+
+        # End
+        return msg_out(True)
+
+    def vote_logout(self):
+        session.pop('voter', None)
+        return True
+
+    def vote_set(self, voter_data, candidate_id):
+        # Get candidate data
+        candidate_data = self.vote_get_by_id(candidate_id)
+        if not candidate_data:
+            return msg_out(False, message='ID kandidat tidak valid')
+
+        # Check
+        ballot_data = VoterBallotModel.query.filter_by(candidate_id=candidate_data.id_, voter_id=voter_data.id_).first()
+        if not ballot_data:
+            ballot_data = VoterBallotModel()
+            ballot_data.voter_id = voter_data.id_
+
+        # Set & save
+        ballot_data.candidate_id = candidate_data.id_
+        ballot_data.save()
+
+        # Logout
+        self.vote_logout()
+
+        # End
+        return msg_out(True, payload=ballot_data)

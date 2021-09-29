@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from flask_paginate import Pagination
 from app import app
 from app.module.voter import Voter
-from app.module.voter.form import VoterForm, VoterRegisterForm
+from app.module.voter.form import VoterForm, VoterRegisterForm, VoterLoginForm
 from app.helper.utils import wrap_log, DataModel
 
 # Init object
@@ -24,7 +24,7 @@ def index():
     query_data = DataModel()
     query_data.search = request.args.get('q', type=str, default="")
     query_data.page = request.args.get('page', type=int, default=1)
-    query_data.per_page = 25  # Default
+    query_data.per_page = 100  # Default
     page_data.query = query_data
 
     # Data
@@ -46,7 +46,7 @@ def index():
 def register():
     # Page Data
     page_data = DataModel()
-    page_data.title = "Pendaftaran Pemilih Tetap"
+    page_data.title = "Daftar"
     page_data.view = request.args.get('view', type=str, default=None)
     page_data.contact = request.args.get('contact', type=str, default=None)
 
@@ -70,8 +70,37 @@ def register():
 def vote():
     # Page Data
     page_data = DataModel()
-    page_data.title = "Bilik Suara"
+    page_data.title = "Berikan Suara"
+    page_data.voter = voter.vote_get_voter()
+    page_data.vote = request.args.get('vote', type=str, default=None)
+    page_data.view = request.args.get('view', type=str, default=None)
 
+    # Login
+    if page_data.voter:
+        # Get data
+        page_data.candidate = voter.vote_get_candidate()
+        page_data.ballot = voter.voter_get_ballot(page_data.voter)
+
+        # Ballot used
+        if page_data.ballot:
+            voter.vote_logout()
+            return redirect(url_for('voter.vote', view='success'))
+
+        # Handle vote
+        if page_data.vote:
+            vote = voter.vote_set(page_data.voter, page_data.vote)
+            vote.do_flash()
+            return redirect(url_for('voter.vote', view='success'))
+
+    else:
+        # Not login
+        page_data.form = VoterLoginForm()
+        if page_data.form.validate_on_submit():
+            login = voter.vote_login(page_data.form)
+            if login.success:
+                return redirect(url_for('voter.vote'))
+            else:
+                login.do_flash()
 
     return render_template("voter/vote.html", data=page_data)
 
