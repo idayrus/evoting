@@ -79,6 +79,10 @@ def vote():
     page_data.vote = request.args.get('vote', type=str, default=None)
     page_data.view = request.args.get('view', type=str, default=None)
 
+    # Check vote
+    if not voter.get_voting_status():
+        return redirect('/')
+
     # Login
     if page_data.voter:
         # Get data

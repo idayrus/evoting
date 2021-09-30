@@ -3,6 +3,7 @@ from flask_login import current_user
 from app import app
 from app.module.candidate.model import CandidateModel
 from app.module.voter.model import VoterModel, VoterBallotModel
+from app.module.setting.model import SettingModel
 from app.helper.utils import msg_out, DataModel
 from app.helper.phone import filter_phone, is_valid_phone
 from sqlalchemy import or_, and_, not_
@@ -28,6 +29,17 @@ class Voter():
         if voter_data:
             # Check data
             if not str(current_id) == str(voter_data.id_):
+                # End
+                return True
+        # End
+        return False
+
+    def get_voting_status(self):
+        # Check
+        current_datetime = datetime.utcnow()
+        setting_data = SettingModel.query.filter_by(identifier='default').first()
+        if setting_data:
+            if setting_data.vote_start <= current_datetime and setting_data.vote_end >= current_datetime:
                 # End
                 return True
         # End
