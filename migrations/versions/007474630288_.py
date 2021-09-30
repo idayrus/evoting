@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: e3496be33905
+Revision ID: 007474630288
 Revises: 
-Create Date: 2021-09-29 15:12:36.823648
+Create Date: 2021-09-30 13:30:41.818553
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import app.helper
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision = 'e3496be33905'
+revision = '007474630288'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -55,18 +55,14 @@ def upgrade():
     sa.Column('modified', sa.DateTime(), nullable=True),
     sa.Column('deleted', sa.Integer(), nullable=True),
     sa.Column('status', sa.Integer(), nullable=True),
-    sa.Column('email', sa.String(length=1024), nullable=False),
-    sa.Column('username', sa.String(length=1024), nullable=True),
-    sa.Column('password', sa.String(length=1024), nullable=False),
-    sa.Column('name', sa.String(length=2048), nullable=False),
+    sa.Column('email', sa.String(length=512), nullable=False),
+    sa.Column('username', sa.String(length=512), nullable=True),
+    sa.Column('password', sa.Text(), nullable=False),
+    sa.Column('name', sa.Text(), nullable=False),
     sa.Column('gender', sa.Integer(), nullable=False),
     sa.Column('birthdate', sa.String(length=64), nullable=True),
     sa.Column('contact', sa.Text(), nullable=True),
     sa.Column('address', sa.Text(), nullable=True),
-    sa.Column('section', sa.String(length=128), nullable=True),
-    sa.Column('position', sa.String(length=128), nullable=True),
-    sa.Column('location', sa.String(length=128), nullable=True),
-    sa.Column('activity', sa.String(length=128), nullable=True),
     sa.Column('extra_info', app.helper.sqlalchemy.DictField(), nullable=True),
     sa.Column('role', app.helper.sqlalchemy.DictField(), nullable=True),
     sa.Column('config', app.helper.sqlalchemy.DictField(), nullable=True),

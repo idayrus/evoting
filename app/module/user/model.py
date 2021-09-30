@@ -5,19 +5,14 @@ from app.helper.database import Database
 
 class UserModel(Database):
     status = db.Column(db.Integer, default=0)  # 0-Inactive, 1-Active
-    email = db.Column(db.String(1024), index=True, nullable=False)
-    username = db.Column(db.String(1024), nullable=True)
-    password = db.Column(db.String(1024), nullable=False)
-    name = db.Column(db.String(2048), nullable=False)
+    email = db.Column(db.String(512), index=True, nullable=False)
+    username = db.Column(db.String(512), nullable=True)
+    password = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
     gender = db.Column(db.Integer, default=0, nullable=False)  # 1-Male, 0-Female
     birthdate = db.Column(db.String(64), nullable=True)
     contact = db.Column(db.Text, nullable=True)
     address = db.Column(db.Text, nullable=True)
-    # Info
-    section = db.Column(db.String(128), nullable=True)
-    position = db.Column(db.String(128), nullable=True)
-    location = db.Column(db.String(128), nullable=True)
-    activity = db.Column(db.String(128), nullable=True)
     # More...
     extra_info = db.Column(MutableDict.as_mutable(DictField), nullable=True, default={})
     role = db.Column(MutableList.as_mutable(DictField), nullable=True, default=[])
