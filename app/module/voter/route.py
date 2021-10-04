@@ -28,6 +28,8 @@ def index():
     query_data = DataModel()
     query_data.search = request.args.get('q', type=str, default="")
     query_data.page = request.args.get('page', type=int, default=1)
+    query_data.status = request.args.get('status', type=str, default=None)
+    query_data.sort = request.args.get('sort', type=str, default=None)
     query_data.per_page = 100  # Default
     page_data.query = query_data
 

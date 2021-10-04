@@ -60,8 +60,15 @@ class Voter():
                 VoterModel.name.ilike("%"+query_data.search+"%")
             ))
 
+        # Status
+        if query_data.status in ['unconfirmed', 'confirmed']:
+            voter_data = voter_data.filter_by(status=query_data.status)
+
         # Sort
-        voter_data = voter_data.order_by(VoterModel.id_number.asc())
+        if query_data.sort == 'oldest':
+            voter_data = voter_data.order_by(VoterModel.created.asc())
+        else:
+            voter_data = voter_data.order_by(VoterModel.created.desc())
 
         # Paginate
         voter_data = voter_data.paginate(page=page, per_page=per_page)

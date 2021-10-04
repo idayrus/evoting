@@ -14,6 +14,7 @@
 			<div class="col-md-4 text-right mt-3 mt-md-0">
 				<form method="GET">
 					<div class="input-group input-group-sm">
+						<button data-toggle="modal" data-target="#modalFilter" class="btn btn-outline-primary btn-sm mr-2 rounded" type="button"><i class="fa fa-filter"></i></button>
 						<input {% if data.query.search %}value="{{ data.query.search }}"{% endif %} name="q" type="text" class="form-control rounded-left border-primary bg-transparent" placeholder="Cari Pemilih">
 						<div class="input-group-append">
 							<button class="btn btn-outline-primary" type="submit"><i class="fa fa-search"></i></button>
@@ -79,6 +80,45 @@
 			{{ data.pagination.links }}
 		</div>
 	{% endif %}
+</div>
+<div class="modal fade" id="modalFilter" tabindex="-1" role="dialog" aria-labelledby="modalFilterLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<form method="GET">
+				<input type="hidden" name="q" value="{{ data.query.search }}" />
+				<div class="modal-body">
+					<div class="slim-input mb-3">
+						<label for="status" id="label_status">Status</label>
+						<div class="input-group">
+							<select class="form-control" name="status">
+								<option value="" {% if not data.query.status %}selected{% endif %}>Semua</option>
+								{% for k, v in [("unconfirmed", "Belum Dikonfirmasi"), ("confirmed", "Sudah Dikonfirmasi")] %}
+									<option value="{{ k }}" {% if data.query.status == k %}selected{% endif %}>{{ v }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<div class="slim-input mt-3" style="position: relative">
+						<label>Urutkan</label>
+						<div>
+							<div class="custom-control custom-radio">
+								<input type="radio" id="sort_newest" name="sort" value="newest" class="custom-control-input" {% if data.query.sort == 'newest' or not data.query.sort %}checked{% endif %}>
+								<label class="custom-control-label text-normal" for="sort_newest">Terbaru</label>
+							</div>
+							<div class="custom-control custom-radio">
+								<input type="radio" id="sort_oldest" name="sort" value="oldest" class="custom-control-input" {% if data.query.sort == 'oldest' %}checked{% endif %}>
+								<label class="custom-control-label text-normal" for="sort_oldest">Terlama</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer pt-2">
+					<button type="button" class="btn btn-light btn-sm m-0" data-dismiss="modal">Batal</button>
+					<button type="submit" class="btn btn-sm ml-3 btn-primary">Filter</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 {% endblock body %}
 {% block footer %}{% endblock footer %}
