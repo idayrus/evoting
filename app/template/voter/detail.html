@@ -63,7 +63,7 @@
 							<button data-action="confirm" data-msg="Apa anda yakin akan mengubah nomor pin ini?" data-url="{{ url_for('voter.detail', id_=data.voter.id_, action='refresh-pin') }}" data-btn-txt="Refresh" data-btn-cls="btn-primary" class="ml-2 btn btn-sm btn-outline-primary" type="button"><i class="fa fa-redo"></i></button>
 							{% if data.voter.contact and data.voter.status == 'confirmed' %}
 								<div class="pt-2">
-									<a href="https://wa.me/{{ data.voter.contact }}?text=Selamat, data {{ config.WEB_INFO.name }} anda sudah dikonfirmasi. Silahkan login dengan PIN berikut: *{{ data.voter.pin }}*." target="_blank"><i class="fa fa-paper-plane mr-2"></i>Kirim PIN via WhatsApp</a>
+									<a href="https://wa.me/{{ data.voter.contact }}?text=Selamat, data {{ config.WEB_INFO.name }} anda sudah dikonfirmasi. Silahkan login dengan PIN berikut *{{ data.voter.pin }}* pada tanggal _{{ data.setting.vote_start|humanize_date(True) }}_ sampai _{{ data.setting.vote_end|humanize_date(True) }}_" target="_blank"><i class="fa fa-paper-plane mr-2"></i>Kirim PIN via WhatsApp</a>
 								</div>
 							{% endif %}
 						{% endif %}

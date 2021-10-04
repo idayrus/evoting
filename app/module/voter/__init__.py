@@ -45,6 +45,9 @@ class Voter():
         # End
         return False
 
+    def get_setting(self):
+        return SettingModel.query.filter_by(identifier='default').first()
+
     #
     # Voter
     #

@@ -183,6 +183,7 @@ def detail(id_):
     page_data.back_url = url_for('voter.index')
     page_data.voter = voter.get_voter_by_id(id_)
     page_data.action = request.args.get('action', type=str, default=None)
+    page_data.setting = voter.get_setting()
 
     # Check
     if not page_data.voter:
