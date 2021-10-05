@@ -189,6 +189,11 @@ def detail(id_):
     if not page_data.voter:
         return abort(404)
 
+    # Get user
+    page_data.user = None
+    if page_data.voter.confirm_by:
+        page_data.user = voter.get_user_by_id(page_data.voter.confirm_by)
+
     # Get ballot status
     page_data.ballot = voter.voter_get_ballot(page_data.voter)
 

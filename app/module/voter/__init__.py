@@ -4,6 +4,7 @@ from app import app
 from app.module.candidate.model import CandidateModel
 from app.module.voter.model import VoterModel, VoterBallotModel
 from app.module.setting.model import SettingModel
+from app.module.user.model import UserModel
 from app.helper.utils import msg_out, DataModel
 from app.helper.phone import filter_phone, is_valid_phone
 from sqlalchemy import or_, and_, not_
@@ -47,6 +48,9 @@ class Voter():
 
     def get_setting(self):
         return SettingModel.query.filter_by(identifier='default').first()
+
+    def get_user_by_id(self, id_):
+        return UserModel.query.filter_by(id_=id_).first()
 
     #
     # Voter
@@ -183,8 +187,8 @@ class Voter():
             voter_data.status = 'unconfirmed'
 
         # Save
-        voter_data.id_number = data.id_number
-        voter_data.name = data.name
+        voter_data.id_number = str(data.id_number or "").upper()
+        voter_data.name = str(data.name or "").title()
         voter_data.gender = data.gender
         voter_data.birthdate = data.birthdate
         voter_data.contact = filter_phone(data.contact)
@@ -236,7 +240,7 @@ class Voter():
 
     def vote_login(self, form):
         # Form
-        id_number = form.id_number.data
+        id_number = str(form.id_number.data or "").upper()
         pin = form.pin.data
 
         # Check
