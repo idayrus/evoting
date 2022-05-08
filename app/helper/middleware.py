@@ -5,6 +5,7 @@ from app.helper.utils import sqlalchemy_info, DataModel
 from app.module.user.model import UserModel, UserTokenModel
 from app.module.user import UserSession
 from werkzeug.routing import BaseConverter, ValidationError
+from werkzeug.utils import safe_join
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from os import path
@@ -18,7 +19,7 @@ from os import path
 @login_required
 def private_static(filename):
     # Get path
-    filepath = path.join(app.config.get("PRIVATE_DIR"), filename)
+    filepath = safe_join(app.config.get("PRIVATE_DIR"), filename)
     if path.isfile(filepath):
         return send_file(filepath)
     # End
