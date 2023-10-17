@@ -1,33 +1,29 @@
-# Idayrus e-Voting
+# E-Voting by Idayrus Studio
 
-## Setup
+## Database
 
-#### Create Database
+Login to mysql client and create database:
 
 ```sql
 CREATE DATABASE db_idayrus_evoting CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-#### Create Venv
+To create table, run this command:
 
-`python3 -m venv venv`
+```
+flask db upgrade
+```
 
-#### Activate
+## Production Setup
 
-`source venv/bin/activate`
+Use nginx, mysql, supervisor, and python to run production.
 
-#### Deactivate
+## Development Setup
 
-`deactivate`
+You need to install mysql-server and python run development.
 
-#### Install Requirements
+#### Create Virtual Environment
 
-`pip3 install -r requirements.txt`
-
-#### Freze Requirements
-
-`pip3 freeze > requirements.txt`
-
-#### Upgrade PIP
-
-`pip3 install --upgrade pip`
+- Create venv: `python3 -m venv venv`
+- Activate: `source venv/bin/activate`
+- Install requirements: `pip3 install -r requirements.txt`

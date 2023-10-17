@@ -50,12 +50,6 @@ USER_LOGIN_BAN_DURATION = timedelta(seconds=(60) * 5) # Banned for 5 minutes
 USER_RECOVERY_EXPIRE = timedelta(hours=3) # Expires in 3 hours
 USER_AUTH_STAMP_DURATION = 60 * 60 # seconds
 
-# Username
-USERNAME_PATTERN = "^[A-Za-z]+[A-Za-z]+[A-Za-z]+[A-Za-z0-9]+$"
-USERNAME_MIN = 4
-USERNAME_MAX = 24
-USER_PASSWORD_MIN = 6
-
 # Flask Login
 REMEMBER_COOKIE_NAME = "_remember"
 REMEMBER_COOKIE_DURATION = timedelta(days=30)
