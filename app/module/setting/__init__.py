@@ -15,7 +15,24 @@ class Setting():
         pass
 
     def get_setting(self):
-        return SettingModel.query.filter_by(identifier='default').first()
+        # Data
+        setting_data = SettingModel.query.filter_by(identifier='default').first()
+        if not setting_data:
+            # Get template
+            file = open(path.join(app.config.get("PRIVATE_DIR"), "landing", "base.html"), "r")
+            template_html = file.read()
+            file.close()
+
+            # New
+            setting_data = SettingModel()
+            setting_data.identifier = 'default'
+            setting_data.vote_start = datetime.utcnow()
+            setting_data.vote_end = datetime.utcnow()
+            setting_data.template = template_html
+            setting_data.save()
+
+        # End
+        return setting_data
 
     #
     # Setting
@@ -63,16 +80,18 @@ class Setting():
         data.end_date = ""
         data.end_time = ""
 
-        # Parse
-        if setting_data.vote_start:
-            start_date = DateTime().from_utc(setting_data.vote_start).to_local().as_datetime()
-            data.start_date = start_date.strftime("%d-%m-%Y")
-            data.start_time = start_date.strftime("%H:%M")
+        # Check
+        if setting_data:
+            # Parse
+            if setting_data.vote_start:
+                start_date = DateTime().from_utc(setting_data.vote_start).to_local().as_datetime()
+                data.start_date = start_date.strftime("%d-%m-%Y")
+                data.start_time = start_date.strftime("%H:%M")
 
-        if setting_data.vote_end:
-            end_date = DateTime().from_utc(setting_data.vote_end).to_local().as_datetime()
-            data.end_date = end_date.strftime("%d-%m-%Y")
-            data.end_time = end_date.strftime("%H:%M")
+            if setting_data.vote_end:
+                end_date = DateTime().from_utc(setting_data.vote_end).to_local().as_datetime()
+                data.end_date = end_date.strftime("%d-%m-%Y")
+                data.end_time = end_date.strftime("%H:%M")
 
         # End
         return data
@@ -86,6 +105,10 @@ class Setting():
         page_data = DataModel()
         page_data.candidate = CandidateModel.query.available().order_by(CandidateModel.number.asc()).all()
         page_data.setting = self.get_setting()
+
+        # Check
+        if not page_data.setting:
+            return "Configuration not found, please login and setup first..."
 
         # Check status
         page_data.current = datetime.utcnow()
